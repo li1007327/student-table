@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>表格的增删改查</title>
+
+    <style>
+
+        body{
+            font-family: 'Segoe UI', sans-serif;
+            background-color: white;
+            padding: 20px;
+        }
+
+        h2{
+            text-align: center;
+            color: #333;
+        }
+        
+        table{
+            width: 90%;
+            
+            margin: 20px auto; /*外边距，20px表示上下外边距都是20像素。auto表示左右外边距自动分配*/
+            border-collapse: collapse;/*会把相邻的单元格边框合并成一条线*/
+            margin-top: 20px;
+            background: white;
+            box-shadow: 0 2px 5px rgb(0,0,0,0.1);  /*0表示阴影水平偏移量，2px表示往下偏移2像素，5px表示阴影的模糊程度（越大越柔和），最后表示阴影颜色，0.1是透明度*/
+        }
+
+        th,td{
+            border: 1px solid #ccc;
+            text-align: center;
+            padding: 10px;
+        }
+
+        th{
+            background-color: #1243;
+            color: white;
+        }
+
+
+
+    </style>
+</head>
+<body>
+    <h1 style="text-align: center;">学生信息表</h1>
+
+
+    <div class="form">
+        <input type="text" id="name" placeholder="姓名">
+        <input type="text"  id="score" placeholder="分数">
+        <input type="text" id="major" placeholder="专业">
+        <button class="add" onclick="addRow()">添加</button>
+    </div>
+
+    
+    <table id="table">
+        <thead>
+            <tr>
+                <th>姓名</th>
+                <th>分数</th>
+                <th>专业</th>
+                <th>操作</th>
+            </tr> 
+        </thead>
+        <!-- /* 表体，放实际的数据内容（可动态删改）*/ -->
+        <tbody> 
+            <!--动态添加-->
+        </tbody>
+    </table> 
+    
+    <script>
+
+        function addRow()
+{
+    let name = document.getElementById("name").value.trim();
+    let score = document.getElementById("score").value.trim();
+    let major = document.getElementById("major").value.trim();
+
+    if(!name || !score || !major){
+        alert("请填写完整信息！");
+        return;
+    }
+
+    let table = document.getElementById("table").getElementsByTagName("tbody")[0];
+    let newRow = table.insertRow();
+
+    //插入前三列
+    newRow.insertCell(0).innerText = name;
+    newRow.insertCell(1).innerText = score;
+    newRow.insertCell(2).innerText = major;
+
+    //插入操作列
+    let actionCell = newRow.insertCell(3);
+    actionCell.innerHTML = ` <button class = "edit"  onclick="editRow(this)">编辑</button>
+    <button class="delete" onclick="deleteRow(this)">删除</button>
+    `;
+
+    //清空输入框
+    document.getElementById("name").value = "";
+    document.getElementById("score").value = "";
+    document.getElementById("major").value = "";
+}
+
+function deleteRow(btn){
+    if (confirm("确定删除这条记录吗？")){
+        let row = btn.parentNode.parentNode;
+        row.parentNode.removeChild(row)
+
+    }
+}
+
+function editRow(btn){
+    let row = btn.parentNode.parentNode;
+    let cells = row.getElementsByTagName("td");
+
+    if(btn.innerText === "编辑"){
+        for(let i = 0; i < 3; i++){
+            let input = document.createElement("input");
+            input.value = cells[i].innerText;
+            cells[i].innerText = "";
+            cells[i].appendChild(input);
+            
+        }
+        btn.innerText = "保存";
+        btn.className = "save";
+    }else{
+        for(let i = 0; i < 3; i++)
+        {
+            cells[i].innerText = cells[i].getElementsByTagName("input")[0].value;
+
+        }
+        btn.innerText = "编辑";
+        btn.className = "edit";
+    }
+}
+    </script>
+</body>
+</html>
